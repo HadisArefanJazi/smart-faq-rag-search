@@ -25,7 +25,7 @@ class FAQChunk:
     text: str
 
     def as_dict(self) -> dict[str, object]:
-        """Return the original dictionary shape used by the monolithic script."""
+        """Return the dictionary shape expected by the retrieval pipeline."""
 
         return {
             "id": self.id,
@@ -37,7 +37,7 @@ class FAQChunk:
 
 
 def clean_text(text: object) -> str:
-    """Normalize text with the original lowercase/strip/space-collapse behavior."""
+    """Lowercase text, trim it, and collapse repeated whitespace."""
 
     return " ".join(str(text).lower().strip().split())
 
@@ -96,7 +96,7 @@ def load_faqs(path: str | Path | None = None, *, allow_sample_fallback: bool = T
 
 
 def make_faq_chunks(df: pd.DataFrame) -> list[dict[str, object]]:
-    """Prepare FAQ rows as retrieval chunks using the original dictionary shape."""
+    """Prepare FAQ rows as retrieval chunks."""
 
     prepared = validate_faqs(df)
     chunks: list[dict[str, object]] = []
@@ -120,7 +120,7 @@ def add_faq_to_frame(
     answer: str,
     category: str,
 ) -> pd.DataFrame:
-    """Return a new dataframe with one FAQ appended, preserving original ID behavior."""
+    """Return a new dataframe with one FAQ appended and the next sequential ID."""
 
     if clean_text(question) == "":
         raise ValueError("question must not be empty.")

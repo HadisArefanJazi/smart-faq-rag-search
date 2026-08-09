@@ -42,7 +42,7 @@ def search_tfidf(
     chunks: Sequence[dict[str, object]],
     top_k: int = 3,
 ) -> list[dict[str, object]]:
-    """Search FAQ chunks with the original TF-IDF cosine-similarity approach."""
+    """Search FAQ chunks with TF-IDF cosine similarity."""
 
     validate_query(question)
     prepared_chunks = ensure_chunks(chunks)

@@ -9,7 +9,7 @@ from smart_faq.retrieval import validate_query
 
 
 def rerank(question: str, results: Sequence[dict[str, object]]) -> list[dict[str, object]]:
-    """Apply the original keyword-overlap bonus and sort by rerank score."""
+    """Apply the keyword-overlap bonus and sort by reranking score."""
 
     validate_query(question)
     words = clean_text(question).split()

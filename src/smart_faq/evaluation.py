@@ -56,7 +56,7 @@ def evaluate(
 
 
 def format_evaluation(summary: dict[str, object]) -> str:
-    """Format evaluation rows using the original concise report style."""
+    """Format evaluation rows as a concise text report."""
 
     lines: list[str] = []
     for row in summary["rows"]:

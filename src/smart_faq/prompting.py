@@ -23,7 +23,7 @@ class FAQAnswer:
     prompt: str
 
     def as_dict(self) -> dict[str, object]:
-        """Return the original response dictionary shape."""
+        """Return the response as a dictionary."""
 
         return {
             "question": self.question,
@@ -47,7 +47,7 @@ def format_sources(results: Sequence[dict[str, object]]) -> str:
 
 
 def make_prompt(question: str, results: Sequence[dict[str, object]]) -> str:
-    """Construct the original grounded prompt from retrieved FAQ context."""
+    """Construct a grounded prompt from retrieved FAQ context."""
 
     validate_query(question)
     context = format_sources(results)

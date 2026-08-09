@@ -28,7 +28,7 @@ flowchart TD
 - Validates required columns: `id`, `question`, `answer`, and `category`.
 - Supports TF-IDF retrieval with cosine similarity.
 - Supports optional semantic retrieval with `sentence-transformers`.
-- Reranks retrieved candidates with the original keyword-overlap bonus.
+- Reranks retrieved candidates with a keyword-overlap bonus.
 - Builds grounded prompts from retrieved FAQ sources.
 - Evaluates predicted FAQ source categories on built-in test questions.
 

@@ -50,7 +50,7 @@ def load_example_questions(path: str | Path = DEFAULT_EXAMPLES_PATH) -> list[str
 
 
 def format_response(response: dict[str, object]) -> str:
-    """Format a response using the original demonstration style."""
+    """Format a response for the command-line demonstration."""
 
     lines = [
         "=" * 70,
@@ -84,7 +84,7 @@ def format_response(response: dict[str, object]) -> str:
 
 
 def run_demo(args: argparse.Namespace) -> None:
-    """Run the default demo flow from the original script."""
+    """Run the default command-line demonstration."""
 
     faqs = load_faqs(args.data_path)
     chunks = make_faq_chunks(faqs)
