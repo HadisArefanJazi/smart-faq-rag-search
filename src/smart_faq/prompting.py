@@ -1,20 +1,16 @@
 """Grounded FAQ prompt construction and answer formatting."""
 
-from __future__ import annotations
-
+from __future__  import annotations
 from dataclasses import dataclass
-from typing import Sequence
-
 from smart_faq.reranking import best_result, passes_threshold, rerank
 from smart_faq.retrieval import search_semantic, search_tfidf, validate_query
 
-FALLBACK_ANSWER = "I do not have enough information in the FAQ data."
+
+fallback_answer = "I do not have enough information in the FAQ data."
 
 
 @dataclass(frozen=True)
-class FAQAnswer:
-    """Structured FAQ answer response."""
-
+class faq_answer:
     question: str
     answer: str
     sources: list[object]
@@ -23,8 +19,6 @@ class FAQAnswer:
     prompt: str
 
     def as_dict(self) -> dict[str, object]:
-        """Return the response as a dictionary."""
-
         return {
             "question": self.question,
             "answer": self.answer,
@@ -35,27 +29,30 @@ class FAQAnswer:
         }
 
 
-def format_sources(results: Sequence[dict[str, object]]) -> str:
-    """Format retrieved FAQs as grounded context."""
-
+def format_sources(results: list[dict[str, object]]) -> str:
     context = ""
+
     for result in results:
         context += f"Source: {result['source']}\n"
         context += f"FAQ Question: {result['question']}\n"
         context += f"FAQ Answer: {result['answer']}\n\n"
+
     return context
 
 
-def make_prompt(question: str, results: Sequence[dict[str, object]]) -> str:
-    """Construct a grounded prompt from retrieved FAQ context."""
+def make_prompt(
+    question: str,
+    results: list[dict[str, object]],
+) -> str:
 
     validate_query(question)
     context = format_sources(results)
+
     prompt = f"""
 Use only the FAQ context below to answer the question.
 
 If the answer is not in the FAQ context, say:
-I do not have enough information in the FAQ data.
+{fallback_answer}
 
 FAQ Context:
 {context}
@@ -65,25 +62,32 @@ User Question:
 
 Answer:
 """
+
     return prompt.strip()
 
 
 def answer_faq(
     question: str,
-    chunks: Sequence[dict[str, object]],
+    chunks: list[dict[str, object]],
     method: str = "tfidf",
     top_k: int = 3,
     threshold: float = 0.20,
     semantic_model: object | None = None,
 ) -> dict[str, object]:
-    """Retrieve, rerank, threshold, and answer an FAQ question."""
 
     validate_query(question)
 
     if method == "tfidf":
         results = search_tfidf(question, chunks, top_k)
+
     elif method == "semantic":
-        results = search_semantic(question, chunks, top_k, model=semantic_model)
+        results = search_semantic(
+            question,
+            chunks,
+            top_k,
+            model=semantic_model,
+        )
+
     else:
         raise ValueError("method must be 'tfidf' or 'semantic'")
 
@@ -92,13 +96,13 @@ def answer_faq(
     prompt = make_prompt(question, results)
 
     if not passes_threshold(best, threshold):
-        answer = FALLBACK_ANSWER
-        sources: list[object] = []
+        answer = fallback_answer
+        sources = []
     else:
         answer = str(best["answer"])
         sources = [best["source"]]
 
-    return FAQAnswer(
+    return faq_answer(
         question=question,
         answer=answer,
         sources=sources,
