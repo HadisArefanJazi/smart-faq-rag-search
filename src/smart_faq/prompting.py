@@ -81,11 +81,7 @@ def answer_faq(
         results = search_tfidf(question, chunks, top_k)
 
     elif method == "semantic":
-        results = search_semantic(
-            question,
-            chunks,
-            top_k,
-            model=semantic_model,
+        results = search_semantic( question, chunks, top_k, model=semantic_model,
         )
 
     else:
