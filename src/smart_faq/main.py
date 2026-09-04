@@ -4,16 +4,14 @@ from __future__ import annotations
 
 import argparse
 import json
-import logging
 from pathlib import Path
 
 from smart_faq.data_loader import DEFAULT_DATA_PATH, load_faqs, make_faq_chunks
 from smart_faq.evaluation import evaluate, format_evaluation
 from smart_faq.prompting import answer_faq
 
-LOGGER = logging.getLogger(__name__)
-REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_EXAMPLES_PATH = REPO_ROOT / "examples" / "sample_queries.json"
+repo_root = Path(__file__).resolve().parents[2]
+default_examples_path = repo_root / "examples" / "sample_queries.json"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -26,15 +24,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--threshold", type=float, default=0.20)
     parser.add_argument("--question", type=str, default="")
     parser.add_argument("--evaluate", action="store_true")
-    parser.add_argument("--examples-path", type=str, default=str(DEFAULT_EXAMPLES_PATH))
-    parser.add_argument("--log-level", type=str, default="INFO")
+    parser.add_argument("--examples-path", type=str, default=str(default_examples_path))
     return parser
 
 
-def load_example_questions(path: str | Path = DEFAULT_EXAMPLES_PATH) -> list[str]:
+def load_example_questions(path: str | Path = default_examples_path) -> list[str]:
     """Load demonstration questions from JSON."""
 
     example_path = Path(path)
+
     if not example_path.exists():
         raise FileNotFoundError(f"Examples file not found: {example_path}")
 
@@ -43,7 +41,9 @@ def load_example_questions(path: str | Path = DEFAULT_EXAMPLES_PATH) -> list[str
     except json.JSONDecodeError as exc:
         raise ValueError(f"Examples file is malformed JSON: {example_path}") from exc
 
-    if not isinstance(data, list) or not all(isinstance(item, str) and item.strip() for item in data):
+    if not isinstance(data, list) or not all(
+        isinstance(item, str) and item.strip() for item in data
+    ):
         raise ValueError("Examples file must be a JSON list of non-empty strings.")
 
     return data
@@ -102,27 +102,37 @@ def run_demo(args: argparse.Namespace) -> None:
             top_k=args.top_k,
             threshold=args.threshold,
         )
-        LOGGER.info("%s", format_response(response))
+        print(format_response(response))
 
     if not args.question:
-        LOGGER.info("")
-        LOGGER.info("Grounded Prompt Example:")
-        response = answer_faq("how do I reset my password?", chunks, method=args.method)
-        LOGGER.info("%s", response["prompt"])
+        print("")
+        print("Grounded Prompt Example:")
+
+        response = answer_faq(
+            "how do I reset my password?",
+            chunks,
+            method=args.method,
+        )
+
+        print(response["prompt"])
 
     if args.evaluate or not args.question:
-        LOGGER.info("")
-        LOGGER.info("Evaluation:")
-        LOGGER.info("%s", format_evaluation(evaluate(chunks, method=args.method)))
+        print("")
+        print("Evaluation:")
+        print(format_evaluation(evaluate(chunks, method=args.method)))
 
     if args.method == "tfidf":
-        LOGGER.info("")
-        LOGGER.info("Semantic search is optional.")
-        LOGGER.info("Install it with:")
-        LOGGER.info("pip install sentence-transformers")
-        LOGGER.info("")
-        LOGGER.info("Then test:")
-        LOGGER.info("python -m smart_faq.main --method semantic --question 'how do I cancel my plan?'")
+        print("")
+        print("Semantic search is optional.")
+        print("Install it with:")
+        print("pip install sentence-transformers")
+        print("")
+        print("Then test:")
+        print(
+            "python -m smart_faq.main "
+            "--method semantic "
+            "--question 'how do I cancel my plan?'"
+        )
 
 
 def main() -> None:
@@ -130,7 +140,6 @@ def main() -> None:
 
     parser = build_parser()
     args = parser.parse_args()
-    logging.basicConfig(level=getattr(logging, args.log_level.upper(), logging.INFO), format="%(message)s")
     run_demo(args)
 
 
