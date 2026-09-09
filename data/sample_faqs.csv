@@ -1,4 +1,16 @@
 id,question,answer,category
-1,How can I reset my password?,You can reset your password by clicking Forgot Password on the login page.,account
-2,How can I contact support?,You can contact support through the help center or by emailing support@example.com.,support
-3,Can I cancel my subscription?,You can cancel your subscription from your account billing settings.,billing
+1,How can I reset my password?,You can reset your password by selecting Forgot Password on the login page and following the reset link sent to your email.,account
+2,Why can’t I log in to my account?,Check that your email and password are correct. If you still cannot sign in reset your password or contact support.,account
+3,How can I change my email address?,You can update your email address from the profile section of your account settings.,account
+4,How can I contact customer support?,You can contact support through the help center or by emailing support@example.com.,support
+5,When is customer support available?,Customer support is available Monday through Friday from 9 AM to 5 PM Eastern Time.,support
+6,Can I cancel my subscription?,You can cancel your subscription from the billing section of your account settings. Your access remains active until the end of the current billing period.,subscription
+7,Can I pause my subscription?,Subscription pausing is not currently supported. You may cancel your subscription and subscribe again later.,subscription
+8,How do I upgrade my plan?,You can upgrade your plan from the billing settings. The new plan becomes available immediately.,subscription
+9,What is the refund policy?,Refund requests can be submitted within 14 days of purchase. Approval depends on the circumstances of the request.,billing
+10,Why was my payment declined?,Payments may be declined because of incorrect card information insufficient funds or restrictions from your bank.,billing
+11,How can I update my payment method?,You can update your card or payment information from the billing section of your account settings.,billing
+12,Where can I download my invoices?,Invoices are available in the billing section under payment history.,billing
+13,Is my personal information secure?,Account information is protected using security controls including encrypted communication and restricted access.,security
+14,How can I enable two factor authentication?,You can enable two factor authentication from the security section of your account settings.,security
+15,How can I delete my account?,You can request account deletion from account settings. Account deletion permanently removes your account after the confirmation process.,account
