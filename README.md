@@ -7,8 +7,7 @@ The system combines BM25 keyword retrieval with SentenceTransformer embeddings, 
 The current implementation focuses on the retrieval and reranking stages commonly used in RAG pipelines. It does not generate new answers with an external LLM.
 
 ## Retrieval Pipeline
-
-## Retrieval Pipeline
+ 
 
 ```mermaid
 flowchart TD
