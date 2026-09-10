@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from smart_faq.data_loader import DEFAULT_DATA_PATH, load_faqs, make_faq_chunks
+from smart_faq.data import DEFAULT_DATA_PATH, load_faqs, make_faq_chunks
 from smart_faq.evaluation import evaluate, format_evaluation
 from smart_faq.prompting import answer_faq
 
@@ -18,7 +18,7 @@ def build_parser() -> argparse.ArgumentParser:
     """Build the command-line parser."""
 
     parser = argparse.ArgumentParser(description="Smart FAQ RAG search")
-    parser.add_argument("--data-path", type=str, default=str(DEFAULT_DATA_PATH))
+    parser.add_argument("--data-path", type=str, default=str(default_data_path))
     parser.add_argument("--method", choices=["tfidf", "semantic"], default="tfidf")
     parser.add_argument("--top-k", type=int, default=3)
     parser.add_argument("--threshold", type=float, default=0.20)
