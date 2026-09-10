@@ -11,9 +11,6 @@ htmlcov/
 venv/
 env/
 
-data/raw/*
-!data/raw/.gitkeep
-
 .DS_Store
 .env
 .env.*
