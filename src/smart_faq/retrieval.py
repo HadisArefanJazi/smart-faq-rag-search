@@ -3,7 +3,7 @@
 from __future__ import annotations
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from smart_faq.data_loader import clean_text, ensure_chunks
+from smart_faq.data import clean_text, ensure_chunks
 
 
 def validate_query(question: str) -> str:
