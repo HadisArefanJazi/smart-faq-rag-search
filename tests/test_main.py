@@ -1,27 +1,73 @@
-import logging
-
-from smart_faq.main import load_example_questions, main
+from smart_faq.main import answer_question
 
 
-def test_cli_single_question_starts_and_logs_answer(monkeypatch, caplog) -> None:
+def test_answer_question_returns_grounded_answer(monkeypatch):
+    candidates = [
+        {
+            "id": 1,
+            "answer": "Reset your password.",
+            "source": "account",
+            "text": "reset password",
+            "score": 0.9,
+        }
+    ]
+
     monkeypatch.setattr(
-        "sys.argv",
-        [
-            "smart-faq",
-            "--question",
-            "How do I reset my password?",
+        "smart_faq.main.retrieve",
+        lambda **kwargs: candidates,
+    )
+
+    monkeypatch.setattr(
+        "smart_faq.main.rerank",
+        lambda *args, **kwargs: [
+            dict(candidates[0], rerank_score=0.9)
         ],
     )
 
-    with caplog.at_level(logging.INFO):
-        main()
+    response = answer_question(
+        query="forgot password",
+        chunks=[],
+        bm25=None,
+        embedding_model=None,
+        chunk_embeddings=None,
+        reranker=None,
+    )
 
-    assert "You can reset your password" in caplog.text
-    assert "Best score:" in caplog.text
+    assert response["answer"] == "Reset your password."
+    assert response["source"] == "account"
 
 
-def test_load_example_questions_reads_json_examples() -> None:
-    questions = load_example_questions("examples/sample_queries.json")
+def test_answer_question_uses_fallback(monkeypatch):
+    candidates = [
+        {
+            "id": 1,
+            "answer": "Some answer",
+            "source": "account",
+            "text": "text",
+            "score": 0.1,
+        }
+    ]
 
-    assert questions[0] == "how do I reset my password?"
-    assert "what is the refund policy?" in questions
+    monkeypatch.setattr(
+        "smart_faq.main.retrieve",
+        lambda **kwargs: candidates,
+    )
+
+    monkeypatch.setattr(
+        "smart_faq.main.rerank",
+        lambda *args, **kwargs: [
+            dict(candidates[0], rerank_score=0.1)
+        ],
+    )
+
+    response = answer_question(
+        query="unrelated question",
+        chunks=[],
+        bm25=None,
+        embedding_model=None,
+        chunk_embeddings=None,
+        reranker=None,
+    )
+
+    assert response["answer"] == "I do not have enough information."
+    assert response["source"] is None
