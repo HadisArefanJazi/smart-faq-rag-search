@@ -8,22 +8,29 @@ The current implementation focuses on the retrieval and reranking stages commonl
 
 ## Retrieval Pipeline
 
-```text
-User Question
-      ↓
- ┌───────────────┬──────────────────┐
- │ BM25          │ Dense Embeddings │
- │ Sparse Search │ Semantic Search  │
- └───────┬───────┴────────┬─────────┘
-         └──── Hybrid Retrieval ────┘
-                    ↓
-            Top-K Candidates
-                    ↓
-          CrossEncoder Reranking
-                    ↓
-          Confidence Threshold
-                    ↓
-             Answer + Source
+## Retrieval Pipeline
+
+```mermaid
+flowchart TD
+    A["User Question"]
+
+    B["BM25<br/>Sparse Search"]
+    C["Dense Embeddings<br/>Semantic Search"]
+
+    D["Hybrid Retrieval"]
+    E["Top-K Candidates"]
+    F["CrossEncoder Reranking"]
+    G["Confidence Threshold"]
+    H["Answer + Source"]
+
+    A --> B
+    A --> C
+    B --> D
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
 ```
 
 ## Features
