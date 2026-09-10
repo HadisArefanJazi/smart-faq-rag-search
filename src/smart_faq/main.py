@@ -52,12 +52,14 @@ def answer_question(
         return {
             "answer": FALLBACK,
             "source": None,
+            "id": None,
             "results": results,
         }
 
     return {
         "answer": best["answer"],
         "source": best["source"],
+        "id": best["id"],
         "results": results,
     }
 
@@ -174,6 +176,7 @@ def main():
         )
 
         print("\nAnswer:", response["answer"])
+        print("FAQ ID:", response["id"])
         print("Source:", response["source"])
 
 
