@@ -1,7 +1,7 @@
 """Rerank FAQ search results."""
 
 from __future__ import annotations
-from smart_faq.data_loader import clean_text
+from smart_faq.data import clean_text
 from smart_faq.retrieval   import validate_query
 
 
