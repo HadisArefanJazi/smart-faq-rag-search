@@ -111,37 +111,6 @@ def make_faq_chunks(df: pd.DataFrame) -> list[dict[str, object]]:
     return chunks
 
 
-def add_faq_to_frame(
-    faqs: pd.DataFrame,
-    question: str,
-    answer: str,
-    category: str,
-) -> pd.DataFrame:
-
-    if not clean_text(question):
-        raise ValueError("question must not be empty.")
-
-    if not clean_text(answer):
-        raise ValueError("answer must not be empty.")
-
-    if not clean_text(category):
-        raise ValueError("category must not be empty.")
-
-    prepared = validate_faqs(faqs)
-    new_id = int(prepared["id"].max()) + 1
-
-    new_row = pd.DataFrame(
-        [{
-            "id": new_id,
-            "question": question,
-            "answer": answer,
-            "category": category,
-        }]
-    )
-
-    return pd.concat([prepared, new_row], ignore_index=True)
-
-
 def ensure_chunks(chunks: list[dict[str, object]]) -> list[dict[str, object]]:
     if not chunks:
         raise ValueError("FAQ chunks are empty.")
