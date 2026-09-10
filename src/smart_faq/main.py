@@ -1,146 +1,176 @@
-"""Command-line entry point for the Smart FAQ RAG search demo."""
-
-from __future__ import annotations
-
 import argparse
-import json
-from pathlib import Path
 
-from smart_faq.data import default_data_path, load_faqs, make_faq_chunks
-from smart_faq.evaluation import evaluate, format_evaluation
-from smart_faq.prompting import answer_faq
+from sentence_transformers import (
+    SentenceTransformer,
+    CrossEncoder,
+)
 
-repo_root = Path(__file__).resolve().parents[2]
-default_examples_path = repo_root / "examples" / "sample_queries.json"
+from smart_faq.data import (
+    load_faqs,
+    make_faq_chunks,
+)
+
+from smart_faq.retrieval import (
+    build_bm25,
+    build_embeddings,
+    retrieve,
+    rerank,
+    passes_threshold,
+)
+
+from smart_faq.evaluation import (
+    TEST_CASES,
+    evaluate,
+)
 
 
-def build_parser() -> argparse.ArgumentParser:
-    """Build the command-line parser."""
-
-    parser = argparse.ArgumentParser(description="Smart FAQ RAG search")
-    parser.add_argument("--data-path", type=str, default=str(default_data_path))
-    parser.add_argument("--method", choices=["tfidf", "semantic"], default="tfidf")
-    parser.add_argument("--top-k", type=int, default=3)
-    parser.add_argument("--threshold", type=float, default=0.20)
-    parser.add_argument("--question", type=str, default="")
-    parser.add_argument("--evaluate", action="store_true")
-    parser.add_argument("--examples-path", type=str, default=str(default_examples_path))
-    return parser
+FALLBACK = "I do not have enough information."
 
 
-def load_example_questions(path: str | Path = default_examples_path) -> list[str]:
-    """Load demonstration questions from JSON."""
+def answer_question(
+    query,
+    chunks,
+    bm25,
+    embedding_model,
+    chunk_embeddings,
+    reranker,
+    method="hybrid",
+    top_k=3,
+    threshold=0.30,
+    alpha=0.5,
+):
+    candidates = retrieve(
+        query=query,
+        chunks=chunks,
+        bm25=bm25,
+        embedding_model=embedding_model,
+        chunk_embeddings=chunk_embeddings,
+        method=method,
+        top_k=10,
+        alpha=alpha,
+    )
 
-    example_path = Path(path)
+    results = rerank(
+        query,
+        candidates,
+        reranker,
+        top_k=top_k,
+    )
 
-    if not example_path.exists():
-        raise FileNotFoundError(f"Examples file not found: {example_path}")
+    best = results[0]
 
-    try:
-        data = json.loads(example_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise ValueError(f"Examples file is malformed JSON: {example_path}") from exc
-
-    if not isinstance(data, list) or not all(
-        isinstance(item, str) and item.strip() for item in data
+    if not passes_threshold(
+        best,
+        threshold
     ):
-        raise ValueError("Examples file must be a JSON list of non-empty strings.")
+        return {
+            "answer": FALLBACK,
+            "source": None,
+            "results": results,
+        }
 
-    return data
-
-
-def format_response(response: dict[str, object]) -> str:
-    """Format a response for the command-line demonstration."""
-
-    lines = [
-        "=" * 70,
-        "Question:",
-        str(response["question"]),
-        "",
-        "Answer:",
-        str(response["answer"]),
-        "",
-        "Sources:",
-        str(response["sources"]),
-        "",
-        "Best score:",
-        str(response["best_score"]),
-        "",
-        "Retrieved FAQs:",
-    ]
-
-    for faq in response["retrieved_faqs"]:
-        lines.extend(
-            [
-                "-" * 50,
-                f"Source: {faq['source']}",
-                f"Question: {faq['question']}",
-                f"Answer: {faq['answer']}",
-                f"Score: {round(float(faq['score']), 3)}",
-            ]
-        )
-
-    return "\n".join(lines)
+    return {
+        "answer": best["answer"],
+        "source": best["source"],
+        "results": results,
+    }
 
 
-def run_demo(args: argparse.Namespace) -> None:
-    """Run the default command-line demonstration."""
+def main():
+    parser = argparse.ArgumentParser()
 
-    faqs = load_faqs(args.data_path)
-    chunks = make_faq_chunks(faqs)
+    parser.add_argument(
+        "--method",
+        choices=["bm25", "semantic", "hybrid"],
+        default="hybrid",
+    )
 
-    if args.question:
-        questions = [args.question]
-    else:
-        questions = load_example_questions(args.examples_path)
+    parser.add_argument(
+        "--evaluate",
+        action="store_true",
+    )
 
-    for question in questions:
-        response = answer_faq(
-            question,
-            chunks,
-            method=args.method,
-            top_k=args.top_k,
-            threshold=args.threshold,
-        )
-        print(format_response(response))
-
-    if not args.question:
-        print("")
-        print("Grounded Prompt Example:")
-
-        response = answer_faq(
-            "how do I reset my password?",
-            chunks,
-            method=args.method,
-        )
-
-        print(response["prompt"])
-
-    if args.evaluate or not args.question:
-        print("")
-        print("Evaluation:")
-        print(format_evaluation(evaluate(chunks, method=args.method)))
-
-    if args.method == "tfidf":
-        print("")
-        print("Semantic search is optional.")
-        print("Install it with:")
-        print("pip install sentence-transformers")
-        print("")
-        print("Then test:")
-        print(
-            "python -m smart_faq.main "
-            "--method semantic "
-            "--question 'how do I cancel my plan?'"
-        )
-
-
-def main() -> None:
-    """CLI entry point."""
-
-    parser = build_parser()
     args = parser.parse_args()
-    run_demo(args)
+
+    # Load data
+    df = load_faqs()
+    chunks = make_faq_chunks(df)
+
+    # Models
+    embedding_model = SentenceTransformer(
+        "all-MiniLM-L6-v2"
+    )
+
+    reranker = CrossEncoder(
+        "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    )
+
+    # Build indexes once
+    bm25 = build_bm25(chunks)
+
+    chunk_embeddings = build_embeddings(
+        chunks,
+        embedding_model,
+    )
+
+    # Evaluation
+    if args.evaluate:
+
+        def retrieve_for_eval(query):
+            return retrieve(
+                query,
+                chunks,
+                bm25,
+                embedding_model,
+                chunk_embeddings,
+                method=args.method,
+                top_k=10,
+            )
+
+        metrics = evaluate(
+            TEST_CASES,
+            retrieve_for_eval,
+            k=3,
+        )
+
+        print(metrics)
+        return
+
+    # Interactive user input
+    print("Ask a question. Type 'quit' to stop.")
+
+    while True:
+
+        query = input("\nYou: ").strip()
+
+        if query.lower() in {
+            "quit",
+            "exit",
+        }:
+            break
+
+        if not query:
+            continue
+
+        response = answer_question(
+            query,
+            chunks,
+            bm25,
+            embedding_model,
+            chunk_embeddings,
+            reranker,
+            method=args.method,
+        )
+
+        print(
+            "\nAnswer:",
+            response["answer"]
+        )
+
+        print(
+            "Source:",
+            response["source"]
+        )
 
 
 if __name__ == "__main__":
