@@ -2,7 +2,7 @@
 
 Smart FAQ Hybrid Retrieval System is an information-retrieval project that maps user questions to the most relevant FAQ answer using sparse retrieval, dense semantic retrieval, hybrid ranking, and neural reranking.
 
-The system combines BM25 keyword retrieval with SentenceTransformer embeddings, reranks retrieved candidates with a CrossEncoder, applies a confidence threshold, and returns the selected FAQ answer together with its source category.
+The system combines BM25 keyword retrieval with SentenceTransformer embeddings, reranks retrieved candidates with a CrossEncoder, applies a reranker score threshold, and returns the selected FAQ answer together with its source category.
 
 The current implementation focuses on the retrieval and reranking stages commonly used in RAG pipelines. It does not generate new answers with an external LLM.
 
@@ -19,7 +19,7 @@ flowchart TD
     D["Hybrid Retrieval"]
     E["Top-K Candidates"]
     F["CrossEncoder Reranking"]
-    G["Confidence Threshold"]
+    G["Reranker Score Threshold"]
     H["Answer + Source"]
 
     A --> B
@@ -64,11 +64,8 @@ smart-faq-rag-search/
 │       └── main.py
 ├── data/
 │   └── sample_faqs.csv
-├── examples/
-│   └── sample_queries.json
 ├── tests/
 ├── README.md
-├── requirements.txt
 ├── pyproject.toml
 ├── .gitignore
 └── LICENSE
@@ -157,9 +154,9 @@ rerank
 best candidate
 ```
 
-### Confidence Threshold
+### Reranker Score Threshold
 
-The highest-ranked result must pass a confidence threshold before its FAQ answer is returned.
+The highest-ranked result must pass a reranker score threshold before its FAQ answer is returned.
 
 If the score is below the threshold, the system returns:
 
@@ -214,13 +211,13 @@ Hybrid retrieval is the default:
 python -m smart_faq.main
 ```
 
-BM25 only:
+BM25 retrieval:
 
 ```bash
 python -m smart_faq.main --method bm25
 ```
 
-Semantic retrieval only:
+Semantic retrieval:
 
 ```bash
 python -m smart_faq.main --method semantic
