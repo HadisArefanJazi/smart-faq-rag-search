@@ -1,36 +1,44 @@
-# Smart FAQ Retrieval System
+# Smart FAQ Hybrid Retrieval System
 
-FAQ search systems need to map user wording to the most relevant support answer. This project demonstrates a lightweight retrieval pipeline that selects candidate FAQ entries, reranks them with simple lexical overlap, and returns either the best grounded answer or a fallback message when confidence is low.
+A lightweight FAQ retrieval project demonstrating modern RAG retrieval techniques.
 
-The project does not use an external LLM API, vector database, web service, or production dataset.
+The system retrieves the most relevant FAQ using sparse and dense retrieval, reranks candidates with a CrossEncoder, and returns either a grounded FAQ answer or a fallback when confidence is low.
 
 ## Retrieval Pipeline
 
-```mermaid
-flowchart TD
-    A["FAQ CSV"] --> B["Load and validate data"]
-    B --> C["Prepare FAQ chunks"]
-    C --> D{"Retrieval method"}
-    D --> E["TF-IDF cosine similarity"]
-    D --> F["Optional sentence embeddings"]
-    E --> G["Candidate results"]
-    F --> G
-    G --> H["Keyword-bonus reranking"]
-    H --> I["Confidence threshold"]
-    I --> J["Answer and sources"]
-    I --> K["Grounded prompt"]
+```text
+User Question
+      ↓
+BM25 sparse retrieval
+      +
+Dense embeddings
+      ↓
+Hybrid retrieval
+      ↓
+Top-K candidates
+      ↓
+CrossEncoder reranking
+      ↓
+Confidence threshold
+      ↓
+Answer + source
 ```
 
 ## Features
 
-- Loads FAQ data from `data/raw/faqs.csv` when available.
-- Falls back to the included `data/sample_faqs.csv` demo dataset.
-- Validates required columns: `id`, `question`, `answer`, and `category`.
-- Supports TF-IDF retrieval with cosine similarity.
-- Supports optional semantic retrieval with `sentence-transformers`.
-- Reranks retrieved candidates with a keyword-overlap bonus.
-- Builds grounded prompts from retrieved FAQ sources.
-- Evaluates predicted FAQ source categories on built-in test questions.
+- FAQ loading and validation
+- Text cleaning and chunk preparation
+- BM25 sparse retrieval
+- SentenceTransformer dense embeddings
+- Hybrid sparse + dense retrieval
+- Configurable hybrid weight (`alpha`)
+- CrossEncoder reranking
+- Top-K retrieval
+- Confidence threshold
+- Source/provenance tracking
+- Recall@K evaluation
+- Mean Reciprocal Rank (MRR)
+- Interactive command-line user input
 
 ## Repository Structure
 
@@ -39,107 +47,59 @@ smart-faq-rag-search/
 ├── src/
 │   └── smart_faq/
 │       ├── __init__.py
-│       ├── data_loader.py
+│       ├── data.py
 │       ├── retrieval.py
-│       ├── reranking.py
-│       ├── prompting.py
 │       ├── evaluation.py
 │       └── main.py
-├── tests/
 ├── data/
-│   ├── raw/
-│   │   └── .gitkeep
 │   └── sample_faqs.csv
 ├── examples/
 │   └── sample_queries.json
+├── tests/
 ├── README.md
 ├── requirements.txt
-├── .gitignore
-├── LICENSE
-└── pyproject.toml
+├── pyproject.toml
+└── LICENSE
 ```
 
 ## Installation
 
-Create and activate a Python environment, then install the project:
-
 ```bash
 python -m pip install -e .
 ```
 
-For optional semantic retrieval:
-
-```bash
-python -m pip install -e ".[semantic]"
-```
-
-For tests:
-
-```bash
-python -m pip install -e ".[dev]"
-```
-
-You can also install from `requirements.txt`:
-
-```bash
-python -m pip install -r requirements.txt
-python -m pip install -e .
-```
-
-## Usage
-
-Run the default demo:
+## Run
 
 ```bash
 python -m smart_faq.main
 ```
 
-Ask one question with TF-IDF retrieval:
+Then enter questions interactively.
+
+Compare retrieval methods:
 
 ```bash
-python -m smart_faq.main --question "how do I reset my password?"
+python -m smart_faq.main --method bm25
+python -m smart_faq.main --method semantic
+python -m smart_faq.main --method hybrid
 ```
 
-Run evaluation only as part of the CLI output:
+Run retrieval evaluation:
 
 ```bash
 python -m smart_faq.main --evaluate
 ```
 
-Use a custom FAQ CSV:
+## Evaluation
 
-```bash
-python -m smart_faq.main --data-path data/raw/faqs.csv
-```
+The project evaluates retrieval using:
 
-Use semantic retrieval after installing the optional dependency:
-
-```bash
-python -m smart_faq.main --method semantic --question "how do I cancel my plan?"
-```
-
-## Data Format
-
-FAQ CSV files must contain these columns:
-
-```text
-id,question,answer,category
-```
-
-Rows with missing or empty `question`, `answer`, or `category` values are rejected.
-
-## Evaluation Methodology
-
-The included evaluation uses three built-in test questions and checks whether the first returned source category matches the expected category. It reports a simple accuracy value and per-question predicted source. This is a sanity check for the demonstration dataset, not a benchmark.
-
-Run tests:
-
-```bash
-pytest
-```
+- Recall@K — whether the correct FAQ appears in the top K results
+- MRR — how highly the correct FAQ is ranked
 
 ## Current Limitations
 
-- The included dataset is a tiny sample FAQ file.
-- The answer is the selected FAQ answer, not generated text.
- 
+- Small demonstration FAQ dataset
+- No external LLM generation
+- No vector database
+- Designed as an interpretable retrieval/RAG experiment rather than a production service
