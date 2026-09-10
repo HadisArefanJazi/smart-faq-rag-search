@@ -171,23 +171,14 @@ This prevents unsupported matches from being returned as valid answers.
 
 ## Installation
 
-Clone the repository:
-
-```bash
-git clone https://github.com/HadisArefanJazi/smart-faq-rag-search.git
-cd smart-faq-rag-search
-```
-
-Install the required dependencies:
-
-```bash
-python -m pip install pandas numpy rank-bm25 sentence-transformers
-```
-
-Install the project in editable mode:
-
 ```bash
 python -m pip install -e .
+```
+
+For development and testing:
+
+```bash
+python -m pip install -e ".[dev]"
 ```
 
 ## Usage
