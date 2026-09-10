@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from smart_faq.data import DEFAULT_DATA_PATH, load_faqs, make_faq_chunks
+from smart_faq.data import default_data_path, load_faqs, make_faq_chunks
 from smart_faq.evaluation import evaluate, format_evaluation
 from smart_faq.prompting import answer_faq
 
