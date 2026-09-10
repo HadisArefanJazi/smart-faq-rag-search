@@ -1,11 +1,42 @@
-from smart_faq.data_loader import load_faqs, make_faq_chunks
-from smart_faq.evaluation import evaluate
+import pytest
+
+from smart_faq.evaluation import (
+    recall_at_k,
+    reciprocal_rank,
+    evaluate,
+)
 
 
-def test_evaluation_matches_original_sample_accuracy() -> None:
-    chunks = make_faq_chunks(load_faqs("data/raw/faqs.csv"))
+def test_recall_at_k():
+    results = [{"id": 2}, {"id": 1}, {"id": 3}]
 
-    summary = evaluate(chunks, method="tfidf")
+    assert recall_at_k(results, expected_id=1, k=2) == 1
+    assert recall_at_k(results, expected_id=3, k=2) == 0
 
-    assert summary["accuracy"] == 1.0
-    assert [row["predicted_source"] for row in summary["rows"]] == ["account", "support", "billing"]
+
+def test_reciprocal_rank():
+    results = [{"id": 2}, {"id": 1}, {"id": 3}]
+
+    assert reciprocal_rank(results, 1) == 0.5
+
+
+def test_evaluate():
+    test_cases = [
+        {"question": "q1", "expected_id": 1},
+        {"question": "q2", "expected_id": 2},
+    ]
+
+    def fake_retrieve(question):
+        if question == "q1":
+            return [{"id": 2}, {"id": 1}]
+
+        return [{"id": 2}, {"id": 1}]
+
+    metrics = evaluate(
+        test_cases,
+        fake_retrieve,
+        k=2,
+    )
+
+    assert metrics["Recall@2"] == 1.0
+    assert metrics["MRR"] == pytest.approx(0.75)
