@@ -1,6 +1,6 @@
 """Smart FAQ retrieval and grounded prompt construction."""
 
-from smart_faq.data_loader import (
+from smart_faq.data import (
     faq_columns,
     faq_chunk,
     clean_text,
