@@ -2,7 +2,6 @@
 
 from smart_faq.data import (
     faq_columns,
-    faq_chunk,
     clean_text,
     load_faqs,
     make_faq_chunks,
@@ -14,7 +13,6 @@ from smart_faq.reranking import rerank
 
 __all__ = [
     "faq_answer",
-    "faq_chunk",
     "faq_columns",
     "answer_faq",
     "clean_text",
