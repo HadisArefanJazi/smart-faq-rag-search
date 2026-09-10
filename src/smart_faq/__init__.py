@@ -1,4 +1,5 @@
-"""Smart FAQ retrieval and grounded prompt construction."""
+"""Smart FAQ hybrid retrieval package."""
+
 
 from smart_faq.data import (
     faq_columns,
