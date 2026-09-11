@@ -48,6 +48,15 @@ def answer_question(
 
     best = results[0]
 
+    print("\n--- Best Result Score ---")
+    print("ID:", best["id"])
+    print("Retrieval score:", best.get("score"))
+    print("BM25 score:", best.get("bm25_score"))
+    print("Dense score:", best.get("dense_score"))
+    print("Rerank score:", best.get("rerank_score"))
+    print("Threshold:", threshold)
+    print("-------------------------")
+
     if not passes_threshold(best, threshold):
         return {
             "answer": FALLBACK,
