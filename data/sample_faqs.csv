@@ -1,16 +1,51 @@
 id,question,answer,category
-1,How can I reset my password?,You can reset your password by selecting Forgot Password on the login page and following the reset link sent to your email.,account
-2,Why can’t I log in to my account?,Check that your email and password are correct. If you still cannot sign in reset your password or contact support.,account
-3,How can I change my email address?,You can update your email address from the profile section of your account settings.,account
-4,How can I contact customer support?,You can contact support through the help center or by emailing support@example.com.,support
-5,When is customer support available?,Customer support is available Monday through Friday from 9 AM to 5 PM Eastern Time.,support
-6,Can I cancel my subscription?,You can cancel your subscription from the billing section of your account settings. Your access remains active until the end of the current billing period.,subscription
-7,Can I pause my subscription?,Subscription pausing is not currently supported. You may cancel your subscription and subscribe again later.,subscription
-8,How do I upgrade my plan?,You can upgrade your plan from the billing settings. The new plan becomes available immediately.,subscription
-9,What is the refund policy?,Refund requests can be submitted within 14 days of purchase. Approval depends on the circumstances of the request.,billing
-10,Why was my payment declined?,Payments may be declined because of incorrect card information insufficient funds or restrictions from your bank.,billing
-11,How can I update my payment method?,You can update your card or payment information from the billing section of your account settings.,billing
-12,Where can I download my invoices?,Invoices are available in the billing section under payment history.,billing
-13,Is my personal information secure?,Account information is protected using security controls including encrypted communication and restricted access.,security
-14,How can I enable two factor authentication?,You can enable two factor authentication from the security section of your account settings.,security
-15,How can I delete my account?,You can request account deletion from account settings. Account deletion permanently removes your account after the confirmation process.,account
+1,How can I get a university ID card?,You can request your student ID card from the campus ID office after your enrollment is confirmed.,student_id
+2,What should I do if I lose my student ID card?,Report the lost card to the campus ID office and request a replacement. A replacement fee may apply.,student_id
+3,Can I use my student ID to access campus buildings?,Yes. Your student ID may be required to enter residence halls libraries labs and other restricted campus facilities.,student_id
+4,How do I get a parking permit?,You can purchase or request a parking permit through the university parking services portal.,parking
+5,Where can students park on campus?,Students must park in lots or spaces assigned to their permit type. Parking maps are available through parking services.,parking
+6,What happens if I park without a permit?,You may receive a parking citation or your vehicle may be towed depending on university parking rules.,parking
+7,How can I appeal a parking ticket?,You can submit a parking citation appeal through the parking services website within the stated appeal period.,parking
+8,Can visitors park on campus?,Yes. Visitors can usually use designated visitor parking areas or obtain a temporary parking permit.,parking
+9,How do I register for classes?,You can register for classes through the student portal during your assigned registration period.,registration
+10,Why can’t I register for a course?,Registration may be blocked because of prerequisites holds time conflicts full enrollment or permission requirements.,registration
+11,How can I add or drop a class?,You can add or drop courses through the student portal before the university add or drop deadline.,registration
+12,What is a course prerequisite?,A prerequisite is a course or requirement that must be completed before you can register for another course.,academics
+13,How can I change my major?,Contact your academic advisor or the department of your intended major to begin the major change process.,academics
+14,How do I contact my academic advisor?,Your advisor information is usually available in the student portal or through your academic department.,academics
+15,What should I do if I am struggling in a class?,Contact your professor academic advisor tutoring center or academic support services as early as possible.,academics
+16,How can I calculate my GPA?,Your GPA is calculated using the grades and credit hours from your courses according to the university grading policy.,academics
+17,How do I request an official transcript?,You can request an official transcript through the registrar or the university transcript ordering service.,records
+18,Where can I see my grades?,Final and current grades are usually available through the student portal or learning management system.,records
+19,How can I change my personal information?,You can update some personal information in the student portal. Legal name changes may require supporting documents.,records
+20,How do I pay my tuition?,You can pay tuition through the university billing portal using the payment methods accepted by the university.,billing
+21,When is tuition due?,Tuition deadlines are listed on the university billing calendar and your student account.,billing
+22,What happens if I do not pay tuition on time?,Late payment may result in fees account holds or cancellation of registration depending on university policy.,billing
+23,How can I apply for financial aid?,Complete the required financial aid application such as FAFSA and submit any additional documents requested by the financial aid office.,financial_aid
+24,How can I check my financial aid status?,You can check your financial aid status and required documents through the student portal.,financial_aid
+25,How do I apply for scholarships?,Scholarship opportunities are usually listed on the university scholarship portal or financial aid website.,financial_aid
+26,Can I work on campus as a student?,Yes. Eligible students can apply for campus jobs through the university employment or career services portal.,employment
+27,How do I apply for university housing?,You can apply for campus housing through the housing portal after completing the required housing application.,housing
+28,Can I change my residence hall or roommate?,Room changes may be possible depending on availability. Contact the housing office for the room change process.,housing
+29,What should I do if something is broken in my dorm room?,Submit a maintenance request through the housing maintenance system or contact residence hall staff.,housing
+30,How do I purchase a meal plan?,Meal plans can usually be purchased or changed through the dining services or student account portal.,dining
+31,Where can I use my meal plan?,Meal plans can be used at participating campus dining halls and food locations according to your plan.,dining
+32,What should I do if I have food allergies?,Contact dining services to discuss available options and any dietary accommodations you may need.,dining
+33,How can I access the university library?,Students can enter the library using their student ID and access many online resources using their university account.,library
+34,How can I borrow books from the library?,Use your student ID to check out eligible library materials at the circulation desk or self checkout station.,library
+35,Can I access research databases from home?,Yes. Students can usually access university databases remotely by signing in with their university account.,library
+36,How can I reset my university account password?,Use the university password reset page or contact the IT help desk if you cannot reset it yourself.,it
+37,Why can’t I connect to campus Wi-Fi?,Check your university username and password and make sure you are connecting to the correct campus network. Contact IT if the problem continues.,it
+38,How do I access university email?,Sign in through the university email portal using your university username and password.,it
+39,Where can I get technical support?,Contact the university IT help desk by phone email online ticket or in person depending on available services.,it
+40,Where can I get medical care on campus?,Students can receive basic medical services through the campus health center. Emergency situations should use emergency medical services.,health
+41,Does the university provide counseling services?,Yes. Students can usually access confidential counseling and mental health services through the university counseling center.,counseling
+42,What should I do in a campus emergency?,Call emergency services or campus police and follow university emergency notifications and instructions.,safety
+43,How can I report a safety concern?,You can report safety concerns to campus police security or the appropriate university office.,safety
+44,Does the university provide disability accommodations?,Yes. Students can request academic and campus accommodations through the university accessibility or disability services office.,accessibility
+45,How can I use the campus bus or shuttle?,Check the university transportation website or app for shuttle routes stops and operating schedules.,transportation
+46,Can I get a discounted public transportation pass?,Some universities offer discounted or free public transportation passes. Check with transportation services for eligibility.,transportation
+47,How can international students get immigration support?,International students should contact the international student office for visa immigration and status-related guidance.,international
+48,Where can I get help finding an internship or job?,Career services can help with resumes interviews internship searches job applications and career planning.,career
+49,How do I apply for graduation?,Submit your graduation application through the student portal before the graduation application deadline.,graduation
+50,What requirements do I need to graduate?,You must complete your program requirements required credits GPA requirements and any other university graduation requirements.,graduation
